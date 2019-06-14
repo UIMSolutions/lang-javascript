@@ -1,6 +1,6 @@
 ﻿module uim.javascript.command;
 
-import uim.js;
+import uim.javascript;
 
 class DJSCommand : DJSRoot {
 	mixin(StringProperty!"command");

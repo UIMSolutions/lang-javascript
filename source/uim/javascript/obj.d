@@ -1,6 +1,6 @@
 ﻿module uim.javascript.obj;
 
-import uim.js;
+import uim.javascript;
 
 class DJSObj : DJSRoot {
 	this() { }

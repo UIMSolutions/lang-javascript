@@ -5,8 +5,8 @@ public import uim.core;
 public import uim.oop;
 
 // Modules
-public import uim.js.obj;
-public import uim.js.command;
+public import uim.javascript.obj;
+public import uim.javascript.command;
 
 @safe class DJSRoot {
 	@safe this() {}

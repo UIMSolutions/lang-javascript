@@ -182,12 +182,25 @@ class DJS {
         ///TODO        
     }
 
+	/*
+	DE: Get - bindet eine Objekteigenschaft an eine Funktion welche aufgerufen wird, wenn die Eigenschaft abgefragt wird.
+	*/
 	O Get(this O)(string name, DJS content) { return this.Get(name, content.toString); }
 	O Get(this O)(string name, string content) {
 		_jsCode ~= "get %s()%s".format(name, block(content));
 		return cast(O)this;	}
     unittest {
-        ///TODO        
+        assert(JS.Get("abc", "xyz") == "get abc(){xyz}");       
+    }
+
+	/*
+	DE: Löschen eines Getters
+	*/
+	O DeleteGet(this O)(string objName, string getName){ 
+		_jsCode ~= "delete %s.%s;".format(objName, getName);
+		return cast(O)this;	}
+    unittest {
+        // assert(JS.DeleteGet("abc", "xyz") == "get abc(){xyz}");       
     }
 
 	O Set(this O)(string name, string[] parameters, DJS content) { return this.Set(name, parameters, content.toString); }
@@ -202,14 +215,14 @@ class DJS {
 		_jsCode ~= "["~items.join(",")~"]"; 
 		return cast(O)this; }
     unittest {
-        ///TODO        
+        assert(JS.Array(["1", "2", "3"]) == "[1,2,3]");        
     }
 
     O Let(this O)(string name, string value) { 
 		_jsCode ~= "let %s=%s;".format(name, value); 
 		return cast(O)this; }
     unittest {
-        ///TODO        
+        assert(JS.Let("a", "'b'") == "let a='b';");       
     }
     
     O Var(this O)(string name, string value = null) { 

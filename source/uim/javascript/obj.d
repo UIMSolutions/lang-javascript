@@ -4,29 +4,56 @@ import uim.javascript;
 
 class DJSObj : DJSRoot {
 	this() { }
-	this(string[string] newValues) { this(); _values = newValues; }
+	this(string aName) { this(); _name = aName; }
 
-@safe:
+	string _name;
+	@property O name(this O)(string newName) { _name = newName; return cast(O)this; } 
+	@property auto name() { return _name; }
+	unittest {
+		assert(JSObj.name("name") == "var name={}"); 
+	} 
+
 	string[string] _values;
-	@property void values(string[string] newValues) { _values = newValues; } 
+	@property O values(this O)(string[string] newValues) { _values = newValues; return cast(O)this; } 
 	@property auto values() { return _values; } 
+	unittest {
+		assert(JSObj.values(["name":"value"]) == "{name:value}"); 
+	} 
 
-	@safe bool opEquals(string value) {
-		return toString() == value;
-	}
+	string[string] _getters;
+	@property O getters(this O)(string[string] newValues) { _getters = newValues; return cast(O)this; } 
+	@property auto getters() { return _getters; } 
+
+	string[string] _setters;
+	@property O setters(this O)(string[string] newValues) { _setters = newValues; return cast(O)this; } 
+	@property auto setters() { return _setters; } 
+
+	bool opEquals(string value) {
+		return toString() == value; }
+	override string toString() { 
+		string result;
+		if (_name) result = "var "~_name~"=";
+		result ~= "{";
+		string[] inner;
+		foreach(k; _values.keys.sort) inner ~= k~":"~_values[k];
+		foreach(k; _getters.keys.sort) inner ~= "get "~k~"()"~jsBlock(_getters[k]);
+		foreach(k; _setters.keys.sort) inner ~= "get "~k~jsBlock(_setters[k]);
+		result ~= inner.join(",")~"}";
+		return result; }
 }
 auto JSObj() { return new DJSObj(); }
-
-@safe {
-	string jsObj(string[string] values = null) {
-		if (values) {
-			string[] kvs;
-			foreach(k, v; values) kvs ~= k~":"~v;
-			return "{"~kvs.join(",")~"}";
-		}
-		return "{}";
-	} 
-}
+auto JSObj(string aName) { return new DJSObj(aName); }
 unittest {
-	writeln("Testing ", __MODULE__);
+	assert((new DJSObj).toString == JSObj.toString);
+	assert((new DJSObj("name")).toString == JSObj("name").toString);
 }
+
+
+string jsObj(string[string] values = null) {
+	if (values) {
+		string[] kvs;
+		foreach(k, v; values) kvs ~= k~":"~v;
+		return "{"~kvs.join(",")~"}";
+	}
+	return "{}";
+} 

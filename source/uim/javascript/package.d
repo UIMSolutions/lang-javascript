@@ -9,16 +9,16 @@ public import uim.javascript.js;
 public import uim.javascript.obj;
 public import uim.javascript.command;
 
-@safe class DJSRoot {
-	@safe this() {}
+class DJSRoot {
+	this() {}
 
-	@safe override string toString() { return ""; }
+	override string toString() { return ""; }
 }
 
+string jsBlock(string content) { return "{"~content~"}"; }
 
-
-string jsFunc(string content) { return "function(){ %s }".format(content); } 
-string jsFunc(string[] parameters, string content) { return "function(%s){ %s }".format(parameters.join(", "), content); } 
+string jsFunc(string content) { return "function()%s".format(jsBlock(content)); } 
+string jsFunc(string[] parameters, string content) { return "function(%s)%s".format(parameters.join(", "), jsBlock(content)); } 
 
 unittest {
 	writeln("Testing ", __MODULE__);

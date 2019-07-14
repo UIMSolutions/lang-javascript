@@ -31,24 +31,12 @@ unittest {
 
 	assert(JS.Switch("value", ["1": "do something;"]) == "switch(value){case 1: do something; break;}"); 
 	assert(JS.Switch("value", ["1": "do something;"], "do the rest;") == "switch(value){case 1: do something; break;default: do the rest;}"); 
-	
-	assert(JS.If("A>B", "do something;") == "if (A>B) {do something;}");
-	assert(JS.IfElse("A>B", "do something;", "do something else;") == "if (A>B) {do something;} else { do something else; }");
-	assert(JS.IfsElse(["A>B"], ["do something;"], "do something else;") == "if (A>B) {do something;} else { do something else; }");
-	assert(JS.IfsElse(["A>B", "C>D"], ["do something;","or do this;"]) == "if (A>B) {do something;} else if (C>D) {or do this;}");
-	assert(JS.IfsElse(["A>B", "C>D"], ["do something;","or do this;"], "do something else;") == "if (A>B) {do something;} else if (C>D) {or do this;} else {do something else;}");
-	
+		
 	writeln(JS.Object(["name":"wert"]));
-	
-	assert(JS.Try("content") == "try { content }");
-	assert(JS.Catch("content", "error") == "catch (error) { content }");
-	assert(JS.CatchIf("errorType", "content") == "catch (e if e instanceof errorType) { content }");
-	assert(JS.CatchIf("errorType", "content", "errorName") == "catch (errorName if errorName instanceof errorType) { content }");
-	assert(JS.Finally("content") == "finally { content }");
-	
-	assert(JS.Constructor("variable", "content") == "constructor(variable) { content }");
-	assert(JS.Get("name", "content") == "get name() { content }");
-	assert(JS.Set("name", ["A", "B"], "content") == "set name(A, B) { content }");
+		
+	assert(JS.Constructor("variable", "content") == "constructor(variable){content}");
+	assert(JS.Get("name", "content") == "get name(){content}");
+	assert(JS.Set("name", ["A", "B"], "content") == "set name(A, B){content}");
 }
 
 auto jsIf(string condition, string content) { return "if (%s) { %s }".format(condition, content); }

@@ -5,9 +5,11 @@ public import uim.core;
 public import uim.oop;
 
 // Modules
+public import uim.javascript.array;
 public import uim.javascript.js;
-public import uim.javascript.obj;
 public import uim.javascript.command;
+public import uim.javascript.obj;
+public import uim.javascript.module_;
 
 class DJSRoot {
 	this() {}
@@ -15,10 +17,54 @@ class DJSRoot {
 	override string toString() { return ""; }
 }
 
-string jsBlock(string content) { return "{"~content~"}"; }
+string jsArray() { return "[]"; }
+string jsArray(string[] values) { return "["~values.join(",")~"]"; }
+unittest {
+	assert(jsArray() == "[]");
+	assert(jsArray(["a", "b"]) == "[a,b]");
+}
 
-string jsFunc(string content) { return "function()%s".format(jsBlock(content)); } 
-string jsFunc(string[] parameters, string content) { return "function(%s)%s".format(parameters.join(", "), jsBlock(content)); } 
+string jsObject(string[string] values, bool sorted = true) {
+	string[] props;
+	foreach(k; values.keys.sort.array) props ~= k~":"~values[k];
+	return "{"~props.join(",")~"}"; }
+unittest {
+	assert(jsObject(["a":"1", "b":"2"]) == "{a:1,b:2}");
+}
+
+string jsBlock(DJS content) { return jsBlock(content.toString); }
+string jsBlock() { return "{}"; }
+string jsBlock(string content) { return "{"~content~"}"; }
+unittest {
+	assert(jsBlock() == "{}");
+	assert(jsBlock("return;") == "{return;}");
+}
+
+string jsFCall(string name = "") { return "%s()".format(name); } 
+string jsFCall(string name, string[] parameters) { return "%s(%s)".format(name, parameters.join(",")); } 
+unittest {
+	assert(jsFCall("fn") == "fn()");
+	assert(jsFCall("fn", ["a", "b"]) == "fn(a,b)");
+}
+
+string jsOCall(string name = "") { return ".%s()".format(name); } 
+string jsOCall(string name, string[] parameters) { return ".%s(%s)".format(name, parameters.join(",")); } 
+unittest {
+	assert(jsOCall("fn") == ".fn()");
+	assert(jsOCall("fn", ["a", "b"]) == ".fn(a,b)");
+}
+
+string jsFunc(DJS content) { return jsFunc(content.toString); } 
+string jsFunc(string[] parameters, DJS content) { return jsFunc(parameters, content.toString);  } 
+string jsFunc(string name, string[] parameters, DJS content) { return jsFunc(name, parameters, content.toString);  } 
+string jsFunc(string content = "") { return "function()%s".format(jsBlock(content)); } 
+string jsFunc(string[] parameters, string content = "") { return "function(%s)%s".format(parameters.join(","), jsBlock(content)); } 
+string jsFunc(string name, string[] parameters, string content = "") { return "function %s(%s)%s".format(name, parameters.join(","), jsBlock(content)); } 
+unittest {
+	assert(jsFunc("return;") == "function(){return;}");
+	assert(jsFunc(["a", "b", "c"], "return;") == "function(a,b,c){return;}");
+	assert(jsFunc("fn", ["a", "b", "c"], "return;") == "function fn(a,b,c){return;}");
+}
 
 unittest {
 	writeln("Testing ", __MODULE__);

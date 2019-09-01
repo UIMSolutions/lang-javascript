@@ -33,5 +33,4 @@ auto jsArray(T)(T[] values = null) {
 }
 
 unittest {
-	writeln("Testing ", __MODULE__);
 }

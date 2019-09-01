@@ -5,7 +5,7 @@ import uim.javascript;
 class DJSModule {
     this() {}
 
-    private string[] _imports;    
+    protected string[] _imports;    
 	O imports(this O)(string[string] someImports) { foreach(k, v; someImports) this.imports(k, v); return cast(O)this; }
 	O imports(this O)(string anName, string fromFile) { this.imports(anName~" from '"~fromFile~"'"); return cast(O)this; }
 	O imports(this O)(string[] someImports) { foreach(imp; someImports) this.imports(imp); return cast(O)this; }
@@ -18,7 +18,7 @@ class DJSModule {
 		assert(JSModule.imports("name from 'file.js'") == "import name from 'file.js';");
 	}
 
-	private string[] _exports;
+	protected string[] _exports;
 	O exportsDefault(this O)(DJS anExport) { this.exportsDefault(anExport.toString); return cast(O)this; }
 	O exportsDefault(this O)(string anExport) { this.exports("default "~anExport); return cast(O)this; }
 	O exports(this O)(DJS[] someExport) { foreach(ex; someExports) this.exports(ex); return cast(O)this; }

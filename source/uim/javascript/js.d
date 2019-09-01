@@ -25,26 +25,6 @@ class DJS {
 		return "{ %s }".format(entries.join(" "));
 	}
 
-	string block(DJS content) { return block(content.toString); } 
-	string block(string content) { return `{`~content~`}`; } 
-    unittest {
-        assert(JS.block("var a=2;") == "{var a=2;}");
-        assert(JS.block(JS.Var("a", "2")) == "{var a=2;}");
-    }
-
-	string andConditions(string[] conditions) {
-        string[] cs; 
-        foreach(condition; conditions) {
-            if (condition.startsWith("(")) cs~= condition; else cs ~= "("~condition~")"; 
-        }
-        return cs.join("&&"); } 
-    unittest {
-        assert(JS.andConditions(["a>b"]) == "(a>b)");
-        assert(JS.andConditions(["(a>b)"]) == "(a>b)");
-        assert(JS.andConditions(["a>b", "c===d"]) == "(a>b)&&(c===d)");
-        assert(JS.andConditions(["(a>b)", "c===d"]) == "(a>b)&&(c===d)");
-    }
-
 	O Func(this O)() { _jsCode ~= "function(){}"; return cast(O)this; } 
 	O Func(this O)(string content) { _jsCode ~= "function()%s".format(block(content)); return cast(O)this; } 
 	O Func(this O)(DJS content) { _jsCode ~= "function()%s".format(block(content)); return cast(O)this; } 
@@ -54,7 +34,6 @@ class DJS {
 	O Func(this O)(string name, string[] parameters, string content) { _jsCode ~= "function %s(%s)%s".format(name, parameters.join(","), block(content)); return cast(O)this; }
 	O Func(this O)(string name, string[] parameters, DJS content) { _jsCode ~= "function %s(%s)%s".format(name, parameters.join(","), block(content)); return cast(O)this; }
     unittest {
-        writeln(JS.Func().Func("return 1;"));
         assert(JS.Func().Func("return 1;") == "function(){}function(){return 1;}");
         assert(JS.Func().Func("return 1;") == "function(){}function(){return 1;}");
         assert(JS.Func("test", "return 1;") == "function test(){return 1;}");
@@ -211,40 +190,39 @@ class DJS {
         ///TODO        
     }
 
-	O Array(this O)(string[] items) { 
+	O array(this O)(string[] items) { 
 		_jsCode ~= "["~items.join(",")~"]"; 
 		return cast(O)this; }
     unittest {
-        assert(JS.Array(["1", "2", "3"]) == "[1,2,3]");        
+        assert(JS.array(["1", "2", "3"]) == "[1,2,3]");        
     }
 
-    O Let(this O)(string name, string value) { 
+    O let(this O)(string name, string value) { 
 		_jsCode ~= "let %s=%s;".format(name, value); 
 		return cast(O)this; }
     unittest {
-        assert(JS.Let("a", "'b'") == "let a='b';");       
+        assert(JS.let("a", "'b'") == "let a='b';");       
     }
     
-    O Var(this O)(string name, string value = null) { 
-        if (value !is null)
-		_jsCode ~= "var %s=%s;".format(name, value);
-		else
-        _jsCode ~= "var %s;".format(name);
-		return cast(O)this; }
-    unittest {
-        assert(JS.Var("a") == "var a;");
-        assert(JS.Var("a", "1") == "var a=1;");
+    O var(this O)(string name, string value = null) { 
+			if (value !is null)
+				_jsCode ~= "var %s=%s;".format(name, value);
+			else
+				_jsCode ~= "var %s;".format(name);
+			return cast(O)this; }
+		unittest {
+        assert(JS.var("a") == "var a;");
+        assert(JS.var("a", "1") == "var a=1;");
     }
 
-    O Var(this O)(string[string] declarations) {
-        string[] declas;
-        string[] keys; foreach(key, name; declarations) keys ~= key; keys = keys.sort.array;
-        foreach(key; keys) declas ~= key~"="~declarations[key]; 
-		_jsCode ~= "var %s;".format(declas.join(",")); 
-		return cast(O)this; }
+    O var(this O)(string[string] declarations) {
+			string[] declas;
+			foreach(key; declarations.keys.sort) declas ~= key~"="~declarations[key]; 
+			_jsCode ~= "var %s;".format(declas.join(",")); 
+			return cast(O)this; }
     unittest {
-        assert(JS.Var(["a":"1"]) == "var a=1;");
-        assert(JS.Var(["a":"1", "b":"2"]) == "var a=1,b=2;");
+        assert(JS.var(["a":"1"]) == "var a=1;");
+        assert(JS.var(["a":"1", "b":"2"]) == "var a=1,b=2;");
     }        
 
 	override string toString() { return _jsCode.join(""); }	

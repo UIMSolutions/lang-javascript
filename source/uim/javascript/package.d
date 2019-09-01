@@ -5,6 +5,7 @@ public import uim.core;
 public import uim.oop;
 
 // Modules
+public import uim.javascript.helper;
 public import uim.javascript.array;
 public import uim.javascript.js;
 public import uim.javascript.command;
@@ -67,18 +68,11 @@ unittest {
 }
 
 unittest {
-	writeln("Testing ", __MODULE__);
-
 	auto js = JS.If("x > 0", "do something;");
 	assert(JS.Func() == "function(){}");
-	writeln(JS.Func().Func("return 1;"));
-	writeln(JS.Func().Func(js));
-	writeln(JS.Func().Func(JS.If("x > 0", "do something;")));
 
 	assert(JS.Switch("value", ["1": "do something;"]) == "switch(value){case 1: do something; break;}"); 
 	assert(JS.Switch("value", ["1": "do something;"], "do the rest;") == "switch(value){case 1: do something; break;default: do the rest;}"); 
-		
-	writeln(JS.Object(["name":"wert"]));
 		
 	assert(JS.Constructor("variable", "content") == "constructor(variable){content}");
 	assert(JS.Get("name", "content") == "get name(){content}");

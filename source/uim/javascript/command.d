@@ -20,8 +20,6 @@ string jsCommand() { return ""; }
 string jsCommand(string aCommand) { return aCommand; }
 
 unittest {
-	writeln("Testing ", __MODULE__);
-
 	assert(JSCommand() == jsCommand());
 	assert(JSCommand("var x = 'xxx';") == jsCommand("var x = 'xxx';"));
 }

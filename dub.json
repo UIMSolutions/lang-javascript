@@ -6,8 +6,8 @@
 	"license": "Apache 2.0",
     "targetType": "library",
 	"dependencies": {
-		"vibe-d:data": "==0.8.5",
-		"uim-core": "==0.19.9",
-		"uim-oop": "==0.19.9"
+		"vibe-d": "~>0.8.6",
+		"uim-core": "~>0.19.11",
+		"uim-oop": "~>0.19.11"
 	}
 }

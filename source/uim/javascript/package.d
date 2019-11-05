@@ -5,6 +5,7 @@ public import uim.core;
 public import uim.oop;
 
 // Modules
+public import uim.javascript.base;
 public import uim.javascript.helper;
 public import uim.javascript.array;
 public import uim.javascript.js;

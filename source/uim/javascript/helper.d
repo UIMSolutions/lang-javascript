@@ -5,7 +5,7 @@ import uim.javascript;
 string jsAnd(string[] conditions...) {
       string[] cs; 
       foreach(condition; conditions) {
-          if (condition.startsWith("(")) cs~= condition; else cs ~= "("~condition~")"; 
+          if (condition.indexOf("(") == 0) cs~= condition; else cs ~= "("~condition~")"; 
       }
       return cs.join("&&"); } 
   unittest {

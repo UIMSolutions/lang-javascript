@@ -128,5 +128,28 @@ unittest {
 auto jsWhile(string[] conditions, string content) { return jsWhile(jsAnd(conditions), content); }
 auto jsWhile(string condition, string content) { return "while%s%s".format(condition, jsBlock(content)); }
 unittest {
+	assert(jsWhile(["(a>b)", "(b<10)", "b++;") == "while((a>b)&&(b<10)){b++;}");
 	assert(jsWhile("(a>b)", "b++;") == "while(a>b){b++;}");
+}
+
+auto jsConst(string[string] settings) { 
+	string result;
+	foreach(k, v; settings) result ~= jsConst(k, v);
+	return result;	
+ }
+auto jsConst(string name, string setting) { return "const %s=%s;".format(name, setting); }
+unittest {
+	///
+}
+
+auto jsLet(string[string] settings) { 
+	string result;
+	foreach(k, v; settings) result ~= jsLet(k, v);
+	return result;	
+ }
+auto jsLet(string name, string setting = null) { 
+	if (setting) return "let %s=%s;".format(name, setting); 
+	return "let %s=%s;".format(name, setting); }
+unittest {
+	///
 }

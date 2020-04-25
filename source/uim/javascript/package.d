@@ -96,3 +96,31 @@ auto jsImports(string[string] imports) {
 
 auto jsForIn(string item, string items, string content) { return "for(let %s in %s) { %s }".format(item, items, content); }
 auto jsForOf(string item, string items, string content) { return "for(let %s ofs %s) { %s }".format(item, items, content); }
+
+auto jsClass(string name, string[] fields, string[] methods) {
+	string setFields;
+	foreach(field; fields) setFields ~= "this.%s=%s;".format(field, field);
+	return "class %s{constructor(%s){%s}%s}".format(name, fields.join(","), setFields, methods.join(""));
+}
+auto jsClass(string name, string[] fields, string methods = null) {
+	string setFields;
+	foreach(field; fields) setFields ~= "this.%s=%s;".format(field, field);
+	return "class %s{constructor(%s){%s}%s}".format(name, fields.join(","), setFields, methods);
+}
+unittest {
+	/// TODO
+}
+
+auto jsClassExtends(string superName, string name, string[] superFields, string[] newFields, string[] methods) {
+	string setFields;
+	foreach(field; newFields) setFields ~= "this.%s=%s;".format(field, field);
+	return "class %s extends %s{constructor(%s){super(%);%s}%s}".format(name, superName, superFields.join(","), (superFields~newFields).join(","), setFields, methods.join(""));
+}
+auto jsClassExtends(string superName, string name, string[] superFields, string[] newFields, string methods = null) {
+	string setFields;
+	foreach(field; newFields) setFields ~= "this.%s=%s;".format(field, field);
+	return "class %s extends %s{constructor(%s){super(%);%s}%s}".format(name, superName, superFields.join(","), (superFields~newFields).join(","), setFields, methods);
+}
+unittest {
+	/// TODO
+}

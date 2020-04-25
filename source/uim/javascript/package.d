@@ -56,12 +56,15 @@ unittest {
 	assert(jsOCall("fn", ["a", "b"]) == ".fn(a,b)");
 }
 
+// Building javascript functions
 string jsFunc(DJS content) { return jsFunc(content.toString); } 
 string jsFunc(string[] parameters, DJS content) { return jsFunc(parameters, content.toString);  } 
 string jsFunc(string name, string[] parameters, DJS content) { return jsFunc(name, parameters, content.toString);  } 
-string jsFunc(string content = "") { return "function()%s".format(jsBlock(content)); } 
-string jsFunc(string[] parameters, string content = "") { return "function(%s)%s".format(parameters.join(","), jsBlock(content)); } 
-string jsFunc(string name, string[] parameters, string content = "") { return "function %s(%s)%s".format(name, parameters.join(","), jsBlock(content)); } 
+
+string jsFunc(string content) { return "function()%s".format(jsBlock(content)); } 
+string jsFunc(string[] parameters, string content) { return "function(%s)%s".format(parameters.join(","), jsBlock(content)); } 
+string jsFunc(string name, string content) { return "function %s()%s".format(name, jsBlock(content)); } 
+string jsFunc(string name, string[] parameters, string content) { return "function %s(%s)%s".format(name, parameters.join(","), jsBlock(content)); } 
 unittest {
 	assert(jsFunc("return;") == "function(){return;}");
 	assert(jsFunc(["a", "b", "c"], "return;") == "function(a,b,c){return;}");
@@ -128,7 +131,7 @@ unittest {
 auto jsWhile(string[] conditions, string content) { return jsWhile(jsAnd(conditions), content); }
 auto jsWhile(string condition, string content) { return "while%s%s".format(condition, jsBlock(content)); }
 unittest {
-	assert(jsWhile(["(a>b)", "(b<10)", "b++;") == "while((a>b)&&(b<10)){b++;}");
+	assert(jsWhile(["(a>b)", "(b<10)"], "b++;") == "while((a>b)&&(b<10)){b++;}");
 	assert(jsWhile("(a>b)", "b++;") == "while(a>b){b++;}");
 }
 

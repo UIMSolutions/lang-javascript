@@ -26,13 +26,13 @@ class DJS {
 	}
 
 	O Func(this O)() { _jsCode ~= "function(){}"; return cast(O)this; } 
-	O Func(this O)(string content) { _jsCode ~= "function()%s".format(block(content)); return cast(O)this; } 
-	O Func(this O)(DJS content) { _jsCode ~= "function()%s".format(block(content)); return cast(O)this; } 
-	O Func(this O)(string name, string content) { _jsCode ~= "function %s()%s".format(name, block(content)); return cast(O)this; } 
-	O Func(this O)(string name, DJS content) { _jsCode ~= "function %s()%s".format(name, block(content)); return cast(O)this; } 
-	O Func(this O)(string[] parameters, string content) { _jsCode ~= "function(%s)%s".format(parameters.join(","), block(content)); return cast(O)this; } 
-	O Func(this O)(string name, string[] parameters, string content) { _jsCode ~= "function %s(%s)%s".format(name, parameters.join(","), block(content)); return cast(O)this; }
-	O Func(this O)(string name, string[] parameters, DJS content) { _jsCode ~= "function %s(%s)%s".format(name, parameters.join(","), block(content)); return cast(O)this; }
+	O Func(this O)(string content) { _jsCode ~= "function()%s".format(jsBlock(content)); return cast(O)this; } 
+	O Func(this O)(DJS content) { _jsCode ~= "function()%s".format(jsBlock(content)); return cast(O)this; } 
+	O Func(this O)(string name, string content) { _jsCode ~= "function %s()%s".format(name, jsBlock(content)); return cast(O)this; } 
+	O Func(this O)(string name, DJS content) { _jsCode ~= "function %s()%s".format(name, jsBlock(content)); return cast(O)this; } 
+	O Func(this O)(string[] parameters, string content) { _jsCode ~= "function(%s)%s".format(parameters.join(","), jsBlock(content)); return cast(O)this; } 
+	O Func(this O)(string name, string[] parameters, string content) { _jsCode ~= "function %s(%s)%s".format(name, parameters.join(","), jsBlock(content)); return cast(O)this; }
+	O Func(this O)(string name, string[] parameters, DJS content) { _jsCode ~= "function %s(%s)%s".format(name, parameters.join(","), jsBlock(content)); return cast(O)this; }
     unittest {
         assert(JS.Func().Func("return 1;") == "function(){}function(){return 1;}");
         assert(JS.Func().Func("return 1;") == "function(){}function(){return 1;}");
@@ -55,7 +55,7 @@ class DJS {
 
 	O If(this O)(string condition, DJS content) { return this.If(condition, content.toString); } 
 	O If(this O)(string condition, string content) { 
-		_jsCode ~= "if(%s)".format(condition)~block(content); 
+		_jsCode ~= "if(%s)".format(condition)~jsBlock(content); 
 		return cast(O)this; }
 	unittest {
 		assert(JS.If("A>B", "do something;") == "if(A>B){do something;}");
@@ -63,7 +63,7 @@ class DJS {
 
 	O Else(this O)(DJS content) { return this.Else(content.toString); }
 	O Else(this O)(string content) { 
-		_jsCode ~= "else"~block(content); 
+		_jsCode ~= "else"~jsBlock(content); 
 		return cast(O)this; }
 	unittest {
 		/// TODO
@@ -97,7 +97,7 @@ class DJS {
 
 	O ForOf(this O)(string variable, string source, DJS statement) { return this.ForOf(variable, source, statement.toString); }
 	O ForOf(this O)(string variable, string source, string statement) {
-		_jsCode ~= "for(let %s of %s)".format(variable, source)~block(statement);
+		_jsCode ~= "for(let %s of %s)".format(variable, source)~jsBlock(statement);
 		return cast(O)this;
 	}
     unittest {
@@ -106,7 +106,7 @@ class DJS {
 
 	O ForIn(this O)(string variable, string source, DJS statement) { return this.ForIn(variable, source, statement.toString); }
 	O ForIn(this O)(string variable, string source, string statement) {
-		_jsCode ~= "for(let %s in %s)".format(variable, source)~block(statement);
+		_jsCode ~= "for(let %s in %s)".format(variable, source)~jsBlock(statement);
 		return cast(O)this;	}
     unittest {
         assert(JS.ForIn("item", "items", "counter++;") == `for(let item in items){counter++;}`);
@@ -122,7 +122,7 @@ class DJS {
 
 	O Try(this O)(DJS content) { return this.Try(content.toString); }
 	O Try(this O)(string content) { 
-		_jsCode ~= "try%s".format(block(content)); 
+		_jsCode ~= "try%s".format(jsBlock(content)); 
 		return cast(O)this; }
     unittest {
 		assert(JS.Try("content") == "try{content}");
@@ -130,7 +130,7 @@ class DJS {
 
 	O Catch(this O)(DJS content, string errorName = "e") { return this.Catch(content.toString, errorName); }
 	O Catch(this O)(string content, string errorName = "e") { 
-		_jsCode ~= "catch(%s)%s".format(errorName, block(content)); 
+		_jsCode ~= "catch(%s)%s".format(errorName, jsBlock(content)); 
 		return cast(O)this; }
     unittest {
 		assert(JS.Catch("content", "error") == "catch(error){content}");
@@ -139,7 +139,7 @@ class DJS {
     }
 
 	O CatchIf(this O)(string errorType, string content, string errorName = "e") { 
-		_jsCode ~= "catch(%s if %s instanceof %s)%s".format(errorName, errorName, errorType, block(content)); 
+		_jsCode ~= "catch(%s if %s instanceof %s)%s".format(errorName, errorName, errorType, jsBlock(content)); 
 		return cast(O)this;	}
     unittest {
         ///TODO        
@@ -147,7 +147,7 @@ class DJS {
 
 	O Finally(this O)(DJS content) { return this.Finally(content.toString); }
 	O Finally(this O)(string content) { 
-		_jsCode ~= "finally%s".format(block(content)); 
+		_jsCode ~= "finally%s".format(jsBlock(content)); 
 		return cast(O)this; }
     unittest {
 		assert(JS.Finally("content") == "finally{content}");
@@ -155,7 +155,7 @@ class DJS {
 
 	O Constructor(this O)(string variable, DJS content) { return this.Constructor(variable, content.toString); }
 	O Constructor(this O)(string variable, string content) {
-		_jsCode ~= "constructor(%s)%s".format(variable, block(content));
+		_jsCode ~= "constructor(%s)%s".format(variable, jsBlock(content));
 		return cast(O)this;	}
     unittest {
         ///TODO        
@@ -166,7 +166,7 @@ class DJS {
 	*/
 	O Get(this O)(string name, DJS content) { return this.Get(name, content.toString); }
 	O Get(this O)(string name, string content) {
-		_jsCode ~= "get %s()%s".format(name, block(content));
+		_jsCode ~= "get %s()%s".format(name, jsBlock(content));
 		return cast(O)this;	}
     unittest {
         assert(JS.Get("abc", "xyz") == "get abc(){xyz}");       
@@ -184,7 +184,7 @@ class DJS {
 
 	O Set(this O)(string name, string[] parameters, DJS content) { return this.Set(name, parameters, content.toString); }
 	O Set(this O)(string name, string[] parameters, string content) {
-		_jsCode ~= "set %s(%s)%s".format(name, parameters.join(", "), block(content));
+		_jsCode ~= "set %s(%s)%s".format(name, parameters.join(", "), jsBlock(content));
 		return cast(O)this;	}
     unittest {
         ///TODO        

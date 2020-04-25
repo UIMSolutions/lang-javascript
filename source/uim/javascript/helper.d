@@ -4,21 +4,26 @@ import uim.javascript;
 
 string jsAnd(string[] conditions...) { return jsAnd(conditions); }
 string jsAnd(string[] conditions) {
-      string[] cs; 
-      foreach(condition; conditions) {
-          if (condition.indexOf("(") == 0) cs~= condition; else cs ~= "("~condition~")"; 
-      }
-      return cs.join("&&"); } 
+    if (conditions.length == 0) return "";
+    string[] cs; 
+    foreach(condition; conditions) if (condition.length > 0) cs~= (condition.indexOf("(") == 0 ? condition : "("~condition~")"); 
+    if (conditions.length == 1) return cs[0]; 
+    return "("~cs.join("&&")~")"; } 
 unittest {
     assert(jsAnd("a>b") == "(a>b)");
     assert(jsAnd("(a>b)") == "(a>b)");
-    assert(jsAnd("a>b", "c===d") == "(a>b)&&(c===d)");
-    assert(jsAnd("(a>b)", "c===d") == "(a>b)&&(c===d)");
+    assert(jsAnd("a>b", "c===d") == "((a>b)&&(c===d))");
+    assert(jsAnd("(a>b)", "c===d") == "((a>b)&&(c===d))");
+
+    assert(jsAnd(["a>b"]) == "(a>b)");
+    assert(jsAnd(["(a>b)"]) == "(a>b)");
+    assert(jsAnd(["a>b", "c===d"]) == "((a>b)&&(c===d))");
+    assert(jsAnd(["(a>b)", "c===d"]) == "((a>b)&&(c===d))");
 }
 
-string block(DJS content) { return block(content.toString); } 
-string block(string content) { return `{`~content~`}`; } 
+string jsBlock(DJS content) { return jsBlock(content.toString); } 
+string jsBlock(string content) { return `{`~content~`}`; } 
 unittest {
-    assert(block("var a=2;") == "{var a=2;}");
-    assert(block(JS.var("a", "2")) == "{var a=2;}");
+    assert(jsBlock("var a=2;") == "{var a=2;}");
+    assert(jsBlock(JS.var("a", "2")) == "{var a=2;}");
 }

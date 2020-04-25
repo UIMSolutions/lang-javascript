@@ -156,3 +156,13 @@ auto jsLet(string name, string setting = null) {
 unittest {
 	///
 }
+
+auto jsForEach(string arrayName, string[] params, string content) {
+	return "%s.forEach(%s)".format(arrayName, jsFunc(params, content));
+}
+auto jsForEach(string arrayName, string content) {
+	return "%s.forEach(%s)".format(arrayName, jsFunc(["element"], content));
+}
+unittest {
+	///
+}

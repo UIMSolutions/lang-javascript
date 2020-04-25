@@ -124,3 +124,9 @@ auto jsClassExtends(string superName, string name, string[] superFields, string[
 unittest {
 	/// TODO
 }
+
+auto jsWhile(string[] conditions, string content) { return jsWhile(jsAnd(conditions), content); }
+auto jsWhile(string condition, string content) { return "while%s%s".format(condition, jsBlock(content)); }
+unittest {
+	assert(jsWhile("(a>b)", "b++;") == "while(a>b){b++;}");
+}

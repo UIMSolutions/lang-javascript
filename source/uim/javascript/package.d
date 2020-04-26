@@ -13,6 +13,7 @@ public import uim.javascript.command;
 public import uim.javascript.obj;
 public import uim.javascript.module_;
 
+@safe:
 class DJSRoot {
 	this() {}
 
@@ -28,7 +29,7 @@ unittest {
 
 string jsObject(string[string] values, bool sorted = true) {
 	string[] props;
-	foreach(k; values.keys.sort.array) props ~= k~":"~values[k];
+	foreach(k; values.toKeys.sort) props ~= k~":"~values[k];
 	return "{"~props.join(",")~"}"; }
 unittest {
 	assert(jsObject(["a":"1", "b":"2"]) == "{a:1,b:2}");
@@ -122,7 +123,7 @@ auto jsClassExtends(string superName, string name, string[] superFields, string[
 auto jsClassExtends(string superName, string name, string[] superFields, string[] newFields, string methods = null) {
 	string setFields;
 	foreach(field; newFields) setFields ~= "this.%s=%s;".format(field, field);
-	return "class %s extends %s{constructor(%s){super(%);%s}%s}".format(name, superName, superFields.join(","), (superFields~newFields).join(","), setFields, methods);
+	return "class %s extends %s{constructor(%s){super(%s);%s}%s}".format(name, superName, superFields.join(","), (superFields~newFields).join(","), setFields, methods);
 }
 unittest {
 	/// TODO
@@ -152,16 +153,16 @@ auto jsLet(string[string] settings) {
  }
 auto jsLet(string name, string setting = null) { 
 	if (setting) return "let %s=%s;".format(name, setting); 
-	return "let %s=%s;".format(name, setting); }
+	return "let %s;".format(name); }
 unittest {
 	///
 }
 
 auto jsForEach(string arrayName, string[] params, string content) {
-	return "%s.forEach(%s)".format(arrayName, jsFunc(params, content));
+	return "%s.forEach(%s);".format(arrayName, jsFunc(params, content));
 }
 auto jsForEach(string arrayName, string content) {
-	return "%s.forEach(%s)".format(arrayName, jsFunc(["element"], content));
+	return "%s.forEach(%s);".format(arrayName, jsFunc(["element"], content));
 }
 unittest {
 	///

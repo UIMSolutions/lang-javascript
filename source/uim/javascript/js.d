@@ -2,7 +2,7 @@ module uim.javascript.js;
 
 import uim.javascript;
 
-class DJS {
+@safe class DJS {
     protected string[string] _parameters;
 
 	this() {}
@@ -217,7 +217,7 @@ class DJS {
 
     O var(this O)(string[string] declarations) {
 			string[] declas;
-			foreach(key; declarations.keys.sort) declas ~= key~"="~declarations[key]; 
+			foreach(key; declarations.toKeys.sort) declas ~= key~"="~declarations[key]; 
 			_jsCode ~= "var %s;".format(declas.join(",")); 
 			return cast(O)this; }
     unittest {

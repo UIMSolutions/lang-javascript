@@ -1,7 +1,7 @@
 module uim.javascript.helper;
 
 import uim.javascript;
-
+@safe:
 string jsAnd(string[] conditions...) { return jsAnd(conditions); }
 string jsAnd(string[] conditions) {
     if (conditions.length == 0) return "";

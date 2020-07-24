@@ -217,7 +217,7 @@ import uim.javascript;
 
     O var(this O)(string[string] declarations) {
 			string[] declas;
-			foreach(key; declarations.toKeys.sort) declas ~= key~"="~declarations[key]; 
+			foreach(key; declarations.getKeys.sort) declas ~= key~"="~declarations[key]; 
 			_jsCode ~= "var %s;".format(declas.join(",")); 
 			return cast(O)this; }
     unittest {

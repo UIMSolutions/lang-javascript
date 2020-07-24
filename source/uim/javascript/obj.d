@@ -35,9 +35,9 @@ class DJSObj : DJSRoot {
 		if (_name) result = "var "~_name~"=";
 		result ~= "{";
 		string[] inner;
-		foreach(k; _values.toKeys.sort) inner ~= k~":"~_values[k];
-		foreach(k; _getters.toKeys.sort) inner ~= "get "~k~"()"~jsBlock(_getters[k]);
-		foreach(k; _setters.toKeys.sort) inner ~= "get "~k~jsBlock(_setters[k]);
+		foreach(k; _values.getKeys.sort) inner ~= k~":"~_values[k];
+		foreach(k; _getters.getKeys.sort) inner ~= "get "~k~"()"~jsBlock(_getters[k]);
+		foreach(k; _setters.getKeys.sort) inner ~= "get "~k~jsBlock(_setters[k]);
 		result ~= inner.join(",")~"}";
 		return result; }
 }

@@ -29,7 +29,7 @@ unittest {
 
 string jsObject(string[string] values, bool sorted = true) {
 	string[] props;
-	foreach(k; values.toKeys.sort) props ~= k~":"~values[k];
+	foreach(k; values.getKeys(sorted)) props ~= k~":"~values[k];
 	return "{"~props.join(",")~"}"; }
 unittest {
 	assert(jsObject(["a":"1", "b":"2"]) == "{a:1,b:2}");
@@ -166,4 +166,103 @@ auto jsForEach(string arrayName, string content) {
 }
 unittest {
 	///
+}
+
+auto jsCreateElement(string tag) {
+	return "document.createElement('"~tag~"')";
+}
+unittest {
+}
+
+auto jsCreateElement(string target, string tag, string text = null) {
+	string result;
+	result ~= jsLet(target, jsCreateElement(tag));
+	if (target) {
+		if (text.length > 0) result ~= `var node=document.createTextNode('`~text.replace("'", "\\'")~`');`; 
+		if (text.length > 0) result ~= target~`.appendChild(node);`;
+		return  result;
+	}
+	return jsCreateElement(tag);
+}
+unittest {
+	assert(jsCreateElement("a", "b") == "let a=document.createElement('b');");
+//	assert(jsCreateElement(null, "b") == "document.createElement('b');");
+}
+
+auto jsCreateElement(string target, string tag, string[string] attributes, string text = null) {
+	string results = jsCreateElement(target, tag, text);
+	if (target) {
+		foreach(k, v; attributes) results ~= "%s.setAttribute('%s','%s');".format(target, k, v);
+	}
+	return results;
+}
+unittest {
+	assert(jsCreateElement("a", "b", ["c":"d"]) == "let a=document.createElement('b');a.setAttribute('c','d');");
+}
+
+auto jsCreateElement(string target, string tag, string[] classes, string text = null) {
+	string results = jsCreateElement(target, tag, text);
+	if (target) {
+	foreach(c; classes) results ~= "%s.classList.add('%s');".format(target, c);
+	}
+	return results;
+}
+unittest {
+	assert(jsCreateElement("a", "b", ["c":"d"]) == "let a=document.createElement('b');a.setAttribute('c','d');");
+}
+
+auto jsCreateElement(string target, string tag, string[] classes, string[string] attributes, string text = null) {
+	string results = jsCreateElement(target, tag, text);
+	if (target) {
+		foreach(c; classes) results ~= "%s.classList.add('%s');".format(target, c);
+		foreach(k, v; attributes) results ~= "%s.setAttribute('%s','%s');".format(target, k, v);
+	}
+	return results;
+}
+unittest {
+	assert(jsCreateElement("a", "b", ["c":"d"]) == "let a=document.createElement('b');a.setAttribute('c','d');");
+}
+
+auto jsAppendChilds(string target, string[] childs...) {
+	string results;
+	foreach(c; childs) results ~= "%s.appendChild(%s);".format(target, c);
+	return results;
+}
+unittest {
+	writeln(jsAppendChilds("a", "b"));
+	assert(jsAppendChilds("a", "b") == "a.appendChild(b);");
+}
+
+auto defineCustomElements(string[string] elements) {
+	string results;
+	foreach(k, v; elements) results ~= defineCustomElements(k, v);
+	return results;
+}
+auto defineCustomElements(string tag, string className) {
+	return "customElements.define('%s', %s);".format(tag, className);
+}
+
+auto jsElementById(string id) {
+	return `document.getElementById("%s");`.format(id);
+}
+auto jsElementById(string target, string id) {
+	return `%s=document.getElementById("%s");`.format(target, id);
+}
+
+auto jsFetch(string url, string[] thens = null) {
+	string result = "fetch('%s')".format(url);
+	foreach(t; thens) result ~= ".then(%s)".format(t);
+	return result~";";
+} 
+unittest {
+	assert(jsFetch("/abc/dec") == "fetch('/abc/dec');");
+}
+
+auto jsFetch(string url, string[string] options, string[] thens) {
+	string result = "fetch('%s', %s)".format(url, toJS(options));
+	foreach(t; thens) result ~= ".then(%s)".format(t);
+	return result~";";
+} 
+unittest {
+	
 }

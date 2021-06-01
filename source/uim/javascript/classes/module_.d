@@ -1,6 +1,8 @@
-module uim.javascript.module_;
+module uim.javascript.classes.module_;
 
 import uim.javascript;
+
+@safe:
 
 class DJSModule {
     this() {}

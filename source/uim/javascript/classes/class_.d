@@ -1,6 +1,8 @@
-module uim.javascript.class_;
+module uim.javascript.classes.class_;
 
 import uim.javascript;
+
+@safe:
 
 class DJSClass : DJSRoot {
 	this(string aClassName, string superClassName) { super(); _name = aClassName; _extends = superClassName; }

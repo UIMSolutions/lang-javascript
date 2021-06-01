@@ -1,6 +1,8 @@
-﻿module uim.javascript.array;
+﻿module uim.javascript.classes.array;
 
 import uim.javascript;
+
+@safe:
 
 class DJSArray(T:string) : DJSRoot {
 	this() { super(); }

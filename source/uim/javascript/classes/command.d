@@ -1,6 +1,8 @@
-﻿module uim.javascript.command;
+﻿module uim.javascript.classes.command;
 
 import uim.javascript;
+
+@safe:
 
 class DJSCommand : DJSRoot {
 	mixin(StringProperty!"command");

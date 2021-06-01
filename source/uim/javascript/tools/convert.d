@@ -2,6 +2,8 @@ module uim.javascript.tools.convert;
 
 import uim.javascript;
 
+@safe:
+
 @safe pure string toJS(T)(T[] values, bool sortedValues = false) {
 	string[] result; 
 
@@ -14,14 +16,14 @@ unittest {
 	assert(["a", "b"].toJS == "[a,b]");
 }
 
-@safe pure string toJS(T)(T[string] values, bool sortedKeys = false) {
+/* @safe */ /* pure */ string toJS(T)(T[string] values, bool sortedKeys = false) {
 	string[] result; 
 	string[] keys = values.getKeys(sortedKeys);
 
 	foreach(k; keys) {
 		auto key = k;
 		if (k.indexOf("-") >= 0) key = "'%s'".format(k);
-		result ~= `%s:%s`.format(key, values[k]);
+		result ~= "%s:%s".format(k, values[k]);
 	}
 	return "{"~result.join(",")~"}";
 }

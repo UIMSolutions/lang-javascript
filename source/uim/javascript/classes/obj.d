@@ -1,6 +1,8 @@
-﻿module uim.javascript.obj;
+﻿module uim.javascript.classes.obj;
 
 import uim.javascript;
+
+@safe:
 
 class DJSObj : DJSRoot {
 	this() { }

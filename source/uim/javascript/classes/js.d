@@ -1,6 +1,8 @@
-module uim.javascript.js;
+module uim.javascript.classes.js;
 
 import uim.javascript;
+
+@safe:
 
 @safe class DJS {
     protected string[string] _parameters;

@@ -1,2 +1,2 @@
-# uim-js
-D library to work with JavaScript
+# uim-javascript
+UIM library to create and read JavaScript-Content

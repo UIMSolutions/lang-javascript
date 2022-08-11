@@ -34,3 +34,7 @@ dub.selections.json
 uim-javascript-test-library
 dub.selections.json
 uim-javascript-test-library
+uim-javascript-test-library
+.gitignore
+uim-javascript-test-library
+dub.selections.json

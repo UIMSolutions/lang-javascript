@@ -120,7 +120,7 @@ import uim.javascript;
 		return cast(O)this;	}
     version(test_uim_javascript) { unittest {
         ///TODO        
-    }
+    }}
 
 	O Try(this O)(DJS content) { return this.Try(content.toString); }
 	O Try(this O)(string content) { 
@@ -225,7 +225,7 @@ import uim.javascript;
     version(test_uim_javascript) { unittest {
         assert(JS.var(["a":"1"]) == "var a=1;");
         assert(JS.var(["a":"1", "b":"2"]) == "var a=1,b=2;");
-    }        
+    }}        
 
 	override string toString() { return _jsCode.join(""); }	
 }

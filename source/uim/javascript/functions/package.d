@@ -157,7 +157,7 @@ auto jsWhile(string condition, string content) { return "while%s%s".format(condi
 version(test_uim_javascript) { unittest {
 	assert(jsWhile(["(a>b)", "(b<10)"], "b++;") == "while((a>b)&&(b<10)){b++;}");
 	assert(jsWhile("(a>b)", "b++;") == "while(a>b){b++;}");
-}
+}}
 
 auto jsConst(string[string] settings) { 
 	string result;

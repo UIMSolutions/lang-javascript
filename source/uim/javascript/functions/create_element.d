@@ -22,7 +22,6 @@ auto jsCreateElement(string target, string tag, string text = null) {
 	return jsCreateElement(tag);
 }
 unittest {
-  writeln("1:", jsCreateElement("a", "b"));
 	assert(jsCreateElement("a", "b") == "let a=document.createElement('b');");
 	assert(jsCreateElement("a", "b", "text") == "let a=document.createElement('b');let node=document.createTextNode('text');a.appendChild(node);");
 }
@@ -33,7 +32,6 @@ auto jsCreateElement(string target, string tag, STRINGAA attributes, string text
 	return results;
 }
 unittest {
-	writeln("2:", jsCreateElement("a", "b", ["c":"d"]));
 	assert(jsCreateElement("a", "b", ["c":"d"]) == "let a=document.createElement('b');a.setAttribute('c','d');");
 }
 
@@ -43,7 +41,6 @@ auto jsCreateElement(string target, string tag, string[] classes, string text = 
 	return results;
 }
 unittest {
-	writeln("3:", jsCreateElement("a", "b", ["c":"d"]) == "let a=document.createElement('b');a.setAttribute('c','d');");
 	assert(jsCreateElement("a", "b", ["c":"d"]) == "let a=document.createElement('b');a.setAttribute('c','d');");
 }
 

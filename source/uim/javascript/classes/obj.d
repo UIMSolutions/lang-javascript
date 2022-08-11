@@ -1,8 +1,8 @@
 ﻿module uim.javascript.classes.obj;
 
+@safe:
 import uim.javascript;
 
-@safe:
 
 class DJSObj : DJSRoot {
 	this() { }
@@ -11,16 +11,16 @@ class DJSObj : DJSRoot {
 	string _name;
 	@property O name(this O)(string newName) { _name = newName; return cast(O)this; } 
 	@property auto name() { return _name; }
-	unittest {
+	version(test_uim_javascript) { unittest {
 		assert(JSObj.name("name") == "var name={}"); 
-	} 
+	} }
 
 	string[string] _values;
 	@property O values(this O)(string[string] newValues) { _values = newValues; return cast(O)this; } 
 	@property auto values() { return _values; } 
-	unittest {
+	version(test_uim_javascript) { unittest {
 		assert(JSObj.values(["name":"value"]) == "{name:value}"); 
-	} 
+	} }
 
 	string[string] _getters;
 	@property O getters(this O)(string[string] newValues) { _getters = newValues; return cast(O)this; } 
@@ -45,10 +45,10 @@ class DJSObj : DJSRoot {
 }
 auto JSObj() { return new DJSObj(); }
 auto JSObj(string aName) { return new DJSObj(aName); }
-unittest {
+version(test_uim_javascript) { unittest {
 	assert((new DJSObj).toString == JSObj.toString);
 	assert((new DJSObj("name")).toString == JSObj("name").toString);
-}
+}}
 
 
 string jsObj(string[string] values = null) {

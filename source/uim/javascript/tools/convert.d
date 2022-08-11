@@ -12,9 +12,9 @@ import uim.javascript;
 	}
 	return "["~result.join(",")~"]";
 }
-unittest {
+version(test_uim_javascript) { unittest {
 	assert(["a", "b"].toJS == "[a,b]");
-}
+}}
 
 /* @safe */ /* pure */ string toJS(T)(T[string] values, bool sortedKeys = false) {
 	string[] result; 
@@ -27,6 +27,6 @@ unittest {
 	}
 	return "{"~result.join(",")~"}";
 }
-unittest {
+version(test_uim_javascript) { unittest {
 	assert(["a":1, "b":2].toJS(SORTED) == "{a:1,b:2}");
-}
+}}

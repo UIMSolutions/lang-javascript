@@ -1,8 +1,7 @@
 module uim.javascript.classes.class_;
 
-import uim.javascript;
-
 @safe:
+import uim.javascript;
 
 class DJSClass : DJSRoot {
 	this(string aClassName, string superClassName) { super(); _name = aClassName; _extends = superClassName; }
@@ -14,14 +13,14 @@ class DJSClass : DJSRoot {
 	string _constructor;
 	@property O constructor(this O)(string newValue) { _constructor = newValue; } 
 	@property auto constructor() { return _constructor; } 
-	unittest {
-	} 
+	version(test_uim_javascript) { unittest {
+	} }
 
 	string[] _constructorParameters;
 	@property O constructorParameters(this O)(string[] newParameters) { _constructorParameters = newParameters; } 
 	@property auto constructorParameters() { return _constructorParameters; } 
-	unittest {
-	} 
+	version(test_uim_javascript) { unittest {
+	}}
 
 	string[string] _getters;
 	@property O getters(this O)(string[string] newValues) { _getters = newValues; } 
@@ -46,6 +45,6 @@ class DJSClass : DJSRoot {
 		return result; }
 }
 auto JSClass(string aName, string superClassName) { return new DJSClass(aName, superClassName); }
-unittest {
+version(test_uim_javascript) { unittest {
 	assert((new DJSClass("name", "super")).toString == JSClass("name", "super").toString);
-}
+}}

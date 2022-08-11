@@ -1,8 +1,7 @@
 ﻿module uim.javascript.classes.command;
 
-import uim.javascript;
-
 @safe:
+import uim.javascript;
 
 class DJSCommand : DJSRoot {
 	mixin(StringProperty!"command");
@@ -21,8 +20,8 @@ auto JSCommand(string aCommand) { return new DJSCommand(aCommand); }
 string jsCommand() { return ""; }
 string jsCommand(string aCommand) { return aCommand; }
 
-unittest {
+version(test_uim_javascript) { unittest {
 	assert(JSCommand() == jsCommand());
 	assert(JSCommand("var x = 'xxx';") == jsCommand("var x = 'xxx';"));
-}
+}}
 

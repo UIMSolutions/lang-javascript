@@ -21,7 +21,7 @@ string jsAnd(string[] conditions) {
     foreach(condition; conditions) if (condition.length > 0) cs~= (condition.indexOf("(") == 0 ? condition : "("~condition~")"); 
     if (conditions.length == 1) return cs[0]; 
     return "("~cs.join("&&")~")"; } 
-unittest {
+version(test_uim_javascript) { unittest {
     assert(jsAnd("a>b") == "(a>b)");
     assert(jsAnd("(a>b)") == "(a>b)");
     assert(jsAnd("a>b", "c===d") == "((a>b)&&(c===d))");
@@ -31,36 +31,36 @@ unittest {
     assert(jsAnd(["(a>b)"]) == "(a>b)");
     assert(jsAnd(["a>b", "c===d"]) == "((a>b)&&(c===d))");
     assert(jsAnd(["(a>b)", "c===d"]) == "((a>b)&&(c===d))");
-}
+}}
 
 string jsArray() { return "[]"; }
 string jsArray(string[] values) { return "["~values.join(",")~"]"; }
-unittest {
+version(test_uim_javascript) { unittest {
 	assert(jsArray() == "[]");
 	assert(jsArray(["a", "b"]) == "[a,b]");
-}
+}}
 
 string jsObject(string[string] values, bool sorted = true) {
 	string[] props;
 	foreach(k; values.getKeys(sorted)) props ~= k~":"~values[k];
 	return "{"~props.join(",")~"}"; }
-unittest {
+version(test_uim_javascript) { unittest {
 	assert(jsObject(["a":"1", "b":"2"]) == "{a:1,b:2}");
-}
+}}
 
 string jsFCall(string name = "") { return "%s()".format(name); } 
 string jsFCall(string name, string[] parameters) { return "%s(%s)".format(name, parameters.join(",")); } 
-unittest {
+version(test_uim_javascript) { unittest {
 	assert(jsFCall("fn") == "fn()");
 	assert(jsFCall("fn", ["a", "b"]) == "fn(a,b)");
-}
+}}
 
 string jsOCall(string name = "") { return ".%s()".format(name); } 
 string jsOCall(string name, string[] parameters) { return ".%s(%s)".format(name, parameters.join(",")); } 
-unittest {
+version(test_uim_javascript) { unittest {
 	assert(jsOCall("fn") == ".fn()");
 	assert(jsOCall("fn", ["a", "b"]) == ".fn(a,b)");
-}
+}}
 
 // Building javascript functions
 string jsFunc(DJS content) { return jsFunc(content.toString); } 
@@ -71,11 +71,11 @@ string jsFunc(string content) { return "function()%s".format(jsBlock(content)); 
 string jsFunc(string[] parameters, string content) { return "function(%s)%s".format(parameters.join(","), jsBlock(content)); } 
 string jsFunc(string name, string content) { return "function %s()%s".format(name, jsBlock(content)); } 
 string jsFunc(string name, string[] parameters, string content) { return "function %s(%s)%s".format(name, parameters.join(","), jsBlock(content)); } 
-unittest {
+version(test_uim_javascript) { unittest {
 	assert(jsFunc("return;") == "function(){return;}");
 	assert(jsFunc(["a", "b", "c"], "return;") == "function(a,b,c){return;}");
 	assert(jsFunc("fn", ["a", "b", "c"], "return;") == "function fn(a,b,c){return;}");
-}
+}}
 
 string jsLambda(string name, string content) { return "%s=>%s".format(name, jsBlock(content)); } 
 
@@ -87,20 +87,20 @@ string jsAsync(string content) { return "async function()%s".format(jsBlock(cont
 string jsAsync(string[] parameters, string content) { return "async function(%s)%s".format(parameters.join(","), jsBlock(content)); } 
 string jsAsync(string name, string content) { return "async function %s()%s".format(name, jsBlock(content)); } 
 string jsAsync(string name, string[] parameters, string content) { return "async function %s(%s)%s".format(name, parameters.join(","), jsBlock(content)); } 
-unittest {
+version(test_uim_javascript) { unittest {
 	assert(jsAsync("return;") == "async function(){return;}");
 	assert(jsAsync(["a", "b", "c"], "return;") == "async function(a,b,c){return;}");
 	assert(jsAsync("fn", ["a", "b", "c"], "return;") == "async function fn(a,b,c){return;}");
-}
+}}
 
 string jsMethod(string name, string content) { return "%s()%s".format(name, jsBlock(content)); } 
 string jsMethod(string name, string[] parameters, string content) { return "%s(%s)%s".format(name, parameters.join(","), jsBlock(content)); } 
-unittest {
+version(test_uim_javascript) { unittest {
 	assert(jsMethod("fn", "return;") == "fn(){return;}");
 	assert(jsMethod("fn", ["a", "b", "c"], "return;") == "fn(a,b,c){return;}");
-}
+}}
 
-unittest {
+version(test_uim_javascript) { unittest {
 	auto js = JS.If("x > 0", "do something;");
 	assert(JS.Func() == "function(){}");
 
@@ -110,7 +110,7 @@ unittest {
 	assert(JS.Constructor("variable", "content") == "constructor(variable){content}");
 	assert(JS.Get("name", "content") == "get name(){content}");
 	assert(JS.Set("name", ["A", "B"], "content") == "set name(A, B){content}");
-}
+}}
 
 auto jsThen(string code) { return ".then(function (response) { %s })".format(code); }
 auto jsCatch(string code) { return ".catch(function (error) { %s })".format(code); }
@@ -134,9 +134,9 @@ auto jsClass(string className, string[] methods) {
 auto jsClass(string className, string superClass, string[] methods) {
 	return "class %s extends %s{%s}".format(className, superClass, methods.join(""));
 }
-unittest {
+version(test_uim_javascript) { unittest {
 	/// TODO
-}
+}}
 
 auto jsClassExtends(string superName, string name, string[] superFields, string[] newFields, string[] methods) {
 	string setFields;
@@ -148,13 +148,13 @@ auto jsClassExtends(string superName, string name, string[] superFields, string[
 	foreach(field; newFields) setFields ~= "this.%s=%s;".format(field, field);
 	return "class %s extends %s{constructor(%s){super(%s);%s}%s}".format(name, superName, superFields.join(","), (superFields~newFields).join(","), setFields, methods);
 }
-unittest {
+version(test_uim_javascript) { unittest {
 	/// TODO
-}
+}}
 
 auto jsWhile(string[] conditions, string content) { return jsWhile(jsAnd(conditions), content); }
 auto jsWhile(string condition, string content) { return "while%s%s".format(condition, jsBlock(content)); }
-unittest {
+version(test_uim_javascript) { unittest {
 	assert(jsWhile(["(a>b)", "(b<10)"], "b++;") == "while((a>b)&&(b<10)){b++;}");
 	assert(jsWhile("(a>b)", "b++;") == "while(a>b){b++;}");
 }
@@ -165,9 +165,9 @@ auto jsConst(string[string] settings) {
 	return result;	
  }
 auto jsConst(string name, string setting) { return "const %s=%s;".format(name, setting); }
-unittest {
+version(test_uim_javascript) { unittest {
 	///
-}
+}}
 
 auto jsLet(string[string] settings) { 
 	string result;
@@ -177,22 +177,22 @@ auto jsLet(string[string] settings) {
 auto jsLet(string name, string setting = null) { 
 	if (setting) return "let %s=%s;".format(name, setting); 
 	return "let %s;".format(name); }
-unittest {
+version(test_uim_javascript) { unittest {
 	///
-}
+}}
 
 auto jsForEach(string arrayName, string content) {
 	return "%s.forEach(%s);".format(arrayName, content);
 }
-unittest {
+version(test_uim_javascript) { unittest {
 	///
-}
+}}
 auto jsForEach(string arrayName, string item, string content) {
 	return "%s.forEach(%s=>%s);".format(arrayName, item, jsBlock(content));
 }
-unittest {
+version(test_uim_javascript) { unittest {
 	///
-}
+}}
 
 
 
@@ -201,10 +201,10 @@ auto jsAppendChilds(string target, string[] childs...) {
 	foreach(c; childs) results ~= "%s.appendChild(%s);".format(target, c);
 	return results;
 }
-unittest {
+version(test_uim_javascript) { unittest {
 	writeln(jsAppendChilds("a", "b"));
 	assert(jsAppendChilds("a", "b") == "a.appendChild(b);");
-}
+}}
 
 auto defineCustomElements(string[string] elements) {
 	string results;
@@ -238,9 +238,9 @@ auto jsFetch(string url, string[] thens = null) {
 	foreach(t; thens) result ~= ".then(%s)".format(t);
 	return result~";";
 } 
-unittest {
+version(test_uim_javascript) { unittest {
 	assert(jsFetch("'/abc/dec'") == "fetch('/abc/dec');");
-}
+}}
 
 auto jsFetch(string url, string[string] options, string[] thens = null, string catch_ = null) {
 	string result = "fetch(%s,%s)".format(url, toJS(options));
@@ -248,6 +248,6 @@ auto jsFetch(string url, string[string] options, string[] thens = null, string c
   if (catch_.length > 0) result ~= ".catch(%s)".format(catch_);
 	return result~";";
 } 
-unittest {
+version(test_uim_javascript) { unittest {
 	assert(jsFetch("'/abc/dec'", ["a":"b"]) == "fetch('/abc/dec',{a:b});");	
-}
+}}

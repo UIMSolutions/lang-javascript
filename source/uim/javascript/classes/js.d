@@ -35,13 +35,13 @@ import uim.javascript;
 	O Func(this O)(string[] parameters, string content) { _jsCode ~= "function(%s)%s".format(parameters.join(","), jsBlock(content)); return cast(O)this; } 
 	O Func(this O)(string name, string[] parameters, string content) { _jsCode ~= "function %s(%s)%s".format(name, parameters.join(","), jsBlock(content)); return cast(O)this; }
 	O Func(this O)(string name, string[] parameters, DJS content) { _jsCode ~= "function %s(%s)%s".format(name, parameters.join(","), jsBlock(content)); return cast(O)this; }
-    unittest {
+    version(test_uim_javascript) { unittest {
         assert(JS.Func().Func("return 1;") == "function(){}function(){return 1;}");
         assert(JS.Func().Func("return 1;") == "function(){}function(){return 1;}");
         assert(JS.Func("test", "return 1;") == "function test(){return 1;}");
         assert(JS.Func(["a", "b"], "return 1;") == "function(a,b){return 1;}");
         assert(JS.Func("test", ["a", "b"], "return 1;") == "function test(a,b){return 1;}");
-    }
+    }}
 
 	O Switch(this O)(string expression, DJS[string] cases, string defaultCase = null) {
 		string[string] results;
@@ -59,17 +59,17 @@ import uim.javascript;
 	O If(this O)(string condition, string content) { 
 		_jsCode ~= "if(%s)".format(condition)~jsBlock(content); 
 		return cast(O)this; }
-	unittest {
+	version(test_uim_javascript) { unittest {
 		assert(JS.If("A>B", "do something;") == "if(A>B){do something;}");
-	}
+	}}
 
 	O Else(this O)(DJS content) { return this.Else(content.toString); }
 	O Else(this O)(string content) { 
 		_jsCode ~= "else"~jsBlock(content); 
 		return cast(O)this; }
-	unittest {
+	version(test_uim_javascript) { unittest {
 		/// TODO
-	}
+	}}
 
 	O IfElse(this O)(string condition, DJS ifContent, string elseContent) { return this.IfElse(condition, ifContent.toString, elseContent); } 
 	O IfElse(this O)(string condition, string ifContent, DJS elseContent) { return this.IfElse(condition, ifContent, elseContent.toString); } 
@@ -77,12 +77,12 @@ import uim.javascript;
 	O IfElse(this O)(string condition, string ifContent, string elseContent) { 
 		_jsCode ~= JS.If(condition, ifContent).toString~" "~JS.Else(elseContent).toString; 
 		return cast(O)this; }
-	unittest {
+	version(test_uim_javascript) { unittest {
 		assert(JS.IfElse("A>B", "do something;", "do something else;") == "if(A>B){do something;} else{do something else;}");
 		assert(JS.IfsElse(["A>B"], ["do something;"], "do something else;") == "if(A>B){do something;} else{do something else;}");
 		assert(JS.IfsElse(["A>B", "C>D"], ["do something;","or do this;"]) == "if(A>B){do something;} else if(C>D){or do this;}");
 		assert(JS.IfsElse(["A>B", "C>D"], ["do something;","or do this;"], "do something else;") == "if(A>B){do something;} else if(C>D){or do this;} else{do something else;}");
-	}
+	}}
 
 	O IfsElse(this O)(string[] conditions, string[] ifContents, string elseContent = null) { 
 		string result = JS.If(conditions[0], ifContents[0]).toString;
@@ -102,23 +102,23 @@ import uim.javascript;
 		_jsCode ~= "for(let %s of %s)".format(variable, source)~jsBlock(statement);
 		return cast(O)this;
 	}
-    unittest {
+    version(test_uim_javascript) { unittest {
         assert(JS.ForOf("item", "items", "document.write(item);") == `for(let item of items){document.write(item);}`);
-    }
+    }}
 
 	O ForIn(this O)(string variable, string source, DJS statement) { return this.ForIn(variable, source, statement.toString); }
 	O ForIn(this O)(string variable, string source, string statement) {
 		_jsCode ~= "for(let %s in %s)".format(variable, source)~jsBlock(statement);
 		return cast(O)this;	}
-    unittest {
+    version(test_uim_javascript) { unittest {
         assert(JS.ForIn("item", "items", "counter++;") == `for(let item in items){counter++;}`);
-    }
+    }}
 
 	O ForEach(this O)(string variable, DJS content, bool withIndex = true) { return this.ForEach(variable, content.toString, withIndex); }
 	O ForEach(this O)(string variable, string content, bool withIndex = true) {
 		_jsCode ~= "%s.forEach(function (element %s) { %s });".format(variable, (withIndex) ? ", index" : "", content);
 		return cast(O)this;	}
-    unittest {
+    version(test_uim_javascript) { unittest {
         ///TODO        
     }
 
@@ -126,42 +126,42 @@ import uim.javascript;
 	O Try(this O)(string content) { 
 		_jsCode ~= "try%s".format(jsBlock(content)); 
 		return cast(O)this; }
-    unittest {
-		assert(JS.Try("content") == "try{content}");
-    }
+    version(test_uim_javascript) { unittest {
+			assert(JS.Try("content") == "try{content}");
+    }}
 
 	O Catch(this O)(DJS content, string errorName = "e") { return this.Catch(content.toString, errorName); }
 	O Catch(this O)(string content, string errorName = "e") { 
 		_jsCode ~= "catch(%s)%s".format(errorName, jsBlock(content)); 
 		return cast(O)this; }
-    unittest {
-		assert(JS.Catch("content", "error") == "catch(error){content}");
-		assert(JS.CatchIf("errorType", "content") == "catch(e if e instanceof errorType){content}");
-		assert(JS.CatchIf("errorType", "content", "errorName") == "catch(errorName if errorName instanceof errorType){content}");
-    }
+    version(test_uim_javascript) { unittest {
+			assert(JS.Catch("content", "error") == "catch(error){content}");
+			assert(JS.CatchIf("errorType", "content") == "catch(e if e instanceof errorType){content}");
+			assert(JS.CatchIf("errorType", "content", "errorName") == "catch(errorName if errorName instanceof errorType){content}");
+    }}
 
 	O CatchIf(this O)(string errorType, string content, string errorName = "e") { 
 		_jsCode ~= "catch(%s if %s instanceof %s)%s".format(errorName, errorName, errorType, jsBlock(content)); 
 		return cast(O)this;	}
-    unittest {
+    version(test_uim_javascript) { unittest {
         ///TODO        
-    }
+    }}
 
 	O Finally(this O)(DJS content) { return this.Finally(content.toString); }
 	O Finally(this O)(string content) { 
 		_jsCode ~= "finally%s".format(jsBlock(content)); 
 		return cast(O)this; }
-    unittest {
-		assert(JS.Finally("content") == "finally{content}");
-    }
+    version(test_uim_javascript) { unittest {
+			assert(JS.Finally("content") == "finally{content}");
+    }}
 
 	O Constructor(this O)(string variable, DJS content) { return this.Constructor(variable, content.toString); }
 	O Constructor(this O)(string variable, string content) {
 		_jsCode ~= "constructor(%s)%s".format(variable, jsBlock(content));
 		return cast(O)this;	}
-    unittest {
+    version(test_uim_javascript) { unittest {
         ///TODO        
-    }
+    }}
 
 	/*
 	DE: Get - bindet eine Objekteigenschaft an eine Funktion welche aufgerufen wird, wenn die Eigenschaft abgefragt wird.
@@ -170,9 +170,9 @@ import uim.javascript;
 	O Get(this O)(string name, string content) {
 		_jsCode ~= "get %s()%s".format(name, jsBlock(content));
 		return cast(O)this;	}
-    unittest {
+    version(test_uim_javascript) { unittest {
         assert(JS.Get("abc", "xyz") == "get abc(){xyz}");       
-    }
+    }}
 
 	/*
 	DE: Löschen eines Getters
@@ -180,31 +180,31 @@ import uim.javascript;
 	O DeleteGet(this O)(string objName, string getName){ 
 		_jsCode ~= "delete %s.%s;".format(objName, getName);
 		return cast(O)this;	}
-    unittest {
+    version(test_uim_javascript) { unittest {
         // assert(JS.DeleteGet("abc", "xyz") == "get abc(){xyz}");       
-    }
+    }}
 
 	O Set(this O)(string name, string[] parameters, DJS content) { return this.Set(name, parameters, content.toString); }
 	O Set(this O)(string name, string[] parameters, string content) {
 		_jsCode ~= "set %s(%s)%s".format(name, parameters.join(", "), jsBlock(content));
 		return cast(O)this;	}
-    unittest {
+    version(test_uim_javascript) { unittest {
         ///TODO        
-    }
+    }}
 
 	O array(this O)(string[] items) { 
 		_jsCode ~= "["~items.join(",")~"]"; 
 		return cast(O)this; }
-    unittest {
+    version(test_uim_javascript) { unittest {
         assert(JS.array(["1", "2", "3"]) == "[1,2,3]");        
-    }
+    }}
 
     O let(this O)(string name, string value) { 
 		_jsCode ~= "let %s=%s;".format(name, value); 
 		return cast(O)this; }
-    unittest {
+    version(test_uim_javascript) { unittest {
         assert(JS.let("a", "'b'") == "let a='b';");       
-    }
+    }}
     
     O var(this O)(string name, string value = null) { 
 			if (value !is null)
@@ -212,17 +212,17 @@ import uim.javascript;
 			else
 				_jsCode ~= "var %s;".format(name);
 			return cast(O)this; }
-		unittest {
-        assert(JS.var("a") == "var a;");
-        assert(JS.var("a", "1") == "var a=1;");
-    }
+		version(test_uim_javascript) { unittest {
+			assert(JS.var("a") == "var a;");
+			assert(JS.var("a", "1") == "var a=1;");
+    }}
 
     O var(this O)(string[string] declarations) {
 			string[] declas;
 			foreach(key; declarations.getKeys.sort) declas ~= key~"="~declarations[key]; 
 			_jsCode ~= "var %s;".format(declas.join(",")); 
 			return cast(O)this; }
-    unittest {
+    version(test_uim_javascript) { unittest {
         assert(JS.var(["a":"1"]) == "var a=1;");
         assert(JS.var(["a":"1", "b":"2"]) == "var a=1,b=2;");
     }        
@@ -232,5 +232,6 @@ import uim.javascript;
 auto JS() { return new DJS(); }
 auto JS(string[string] someParameters) { return new DJS(someParameters); }
 
-unittest {
-}
+version(test_uim_javascript) { unittest {
+	// TODO
+}}

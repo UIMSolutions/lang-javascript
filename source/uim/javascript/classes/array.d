@@ -34,5 +34,6 @@ auto jsArray(T)(T[] values = null) {
 	return "[]";
 }
 
-unittest {
-}
+version(test_uim_javascript) { unittest {
+	// TODO
+}}

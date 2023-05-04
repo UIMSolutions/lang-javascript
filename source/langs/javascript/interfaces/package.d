@@ -1,0 +1,1 @@
+module langs.javascript.interfaces;

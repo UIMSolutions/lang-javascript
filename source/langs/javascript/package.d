@@ -1,9 +1,6 @@
 ﻿module langs.javascript;
 
-// Standard libraries
-public import std.stdio;
-public import std.string;
-public import std.uuid;
+mixin(ImportPhobos!());
 
 // Dub libraries
 public import vibe.d;

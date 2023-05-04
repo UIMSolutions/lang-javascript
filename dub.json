@@ -1,30 +1,29 @@
 {
+	"name": "uim-javascript",
+	"description": "D library for working with JavaScript",
 	"authors": [
-		"UI Manufaktur Team"
+		"Sicherheitsschmiede",
+		"Ozan Nurettin Süel"
 	],
-	"copyright": "Copyright © 2017-2022, UI Manufaktur UG",
+	"copyright": "Copyright © 2015-2023, Ozan Nurettin Süel",	
+	"license": "Apache-2.0",
 	"dependencies": {
 		"colored": "~>0.0.27",
 		"silly": "~>1.1.1",
 		"vibe-d": "~>0.9.5"
 	},
-	"description": "D library for working with JavaScript",
 	"importPaths": [
 		"../../LIBS/uim-core",
 		"../../LIBS/uim-oop",
 		"../../LIBS/uim-css",
-		"../../LIBS/uim-javascript",
 		"../../LIBS/uim-json",
 		"./"
 	],
-	"license": "Apache-2.0",
-	"name": "uim-javascript",
 	"sourcePaths": [
 		"../../LIBS/uim-core",
 		"../../LIBS/uim-oop",
 		"../../LIBS/uim-css",
 		"../../LIBS/uim-json",
-		"../../LIBS/uim-javascript",
 		"./"
 	],
 	"targetType": "library"

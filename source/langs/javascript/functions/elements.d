@@ -1,15 +1,25 @@
 module langs.javascript.functions.elements;
 
 import langs.javascript;
-
 @safe:
-string jsBlock(DJS content, DJS[] contents...) { return jsBlock(content~contents); }
-string jsBlock(DJS[] contents) {
-  string[] results;  
-  foreach(c; contents) results ~= c.toString;
-  return jsBlock(results); }
-string jsBlock(string[] contents...) { return jsBlock(contents); }
-string jsBlock(string[] contents) { return "{"~contents.join()~"}"; }
+
+string jsBlock(DJS someContent, DJS[] someContents...) { 
+  return jsBlock(someContent~someContents); 
+}
+
+string jsBlock(DJS[] someContents) {
+  return jsBlock(
+    someContents.map!(c => c.toString).array); 
+}
+
+string jsBlock(string[] someContents...) { 
+  return jsBlock(someContents.dup); 
+}
+
+string jsBlock(string[] someContents) { 
+  return "{"~someContents.join()~"}"; 
+}
+
 version(test_uim_javascript) { unittest {
 	assert(jsBlock() == "{}");
 	assert(jsBlock("return;") == "{return;}");
